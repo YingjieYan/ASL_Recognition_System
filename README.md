@@ -9,7 +9,7 @@ devices can detect sign language and perform the corresponding operation. By int
 deep learning techniques, our system recognizes and interprets hand gestures. Expand our organization’s reach into the 
 healthcare, education, and smart technology markets.
 ## 🚀 Project structure
-```text
+<pre>
 ASL/
 ├── step1_upload_dataset.py      # Upload image dataset and generate metadata
 ├── step2_preprocessing.py       # Load and preprocess images, upload training/test sets
@@ -17,7 +17,7 @@ ASL/
 ├── main.py                      # ClearML Pipeline controller
 ├── upload_dataset.py            # Upload local data
 └── README.md
-text```
+</pre>
 # Getting Started
 ## 1. Install Dependencies
   pip install clearml
