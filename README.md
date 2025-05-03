@@ -41,7 +41,7 @@ Create a credential from the clearml workspace and paste it above
 ## 3 Train the CNN model and save the weights
    <pre>  python step3_train_model.py  </pre> 
 ## 4 start ClearML Agent
-    <pre> clearml-agent daemon --queue pipeline --detached  </pre> 
+  <pre> clearml-agent daemon --queue pipeline --detached  </pre> 
 ## 5 Run the pipeline controller to register its three steps into ASL_Pipeline
    <pre>  python main.py  </pre> 
 # The following is the pipeline operation diagram
