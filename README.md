@@ -25,7 +25,7 @@ ASL/
   pip install clearml-agent
 </pre>
 ## 2. Configure ClearML
-Paste the credential into the clearML workspace
+Create a credential from the clearml workspace and paste it above
 <pre>
   clearml-init
 </pre>
