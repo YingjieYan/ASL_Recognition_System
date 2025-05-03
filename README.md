@@ -20,25 +20,30 @@ ASL/
 </pre>
 # Getting Started
 ## 1. Install Dependencies
+<pre>
   pip install clearml
   pip install clearml-agent
+</pre>
 ## 2. Configure ClearML
 Paste the credential into the clearML workspace
+<pre>
   clearml-init
+</pre>
 ## 3. Upload local datasets to clearML datasets
+<pre>
   python upload_dataset.py
-
+</pre>
 # Run three steps and store it in the ASL_Classification project
 ## 1 Upload image dataset and generate metadata
-  python step1_dataset_upload.py
+ <pre> python step1_dataset_upload.py</pre>
 ## 2 Load and preprocess images, upload training/test sets
-  python step2_preprocessing.py
+  <pre> python step2_preprocessing.py</pre>
 ## 3 Train the CNN model and save the weights
-  python step3_train_model.py
+   <pre>  python step3_train_model.py  </pre> 
 ## 4 start ClearML Agent
-  clearml-agent daemon --queue pipeline --detached
+    <pre> clearml-agent daemon --queue pipeline --detached  </pre> 
 ## 5 Run the pipeline controller to register its three steps into ASL_Pipeline
-  python main.py
+   <pre>  python main.py  </pre> 
 # The following is the pipeline operation diagram
 
 <img width="293" alt="readme" src="https://github.com/user-attachments/assets/a003b172-2e23-4041-95c2-804cfe1ee946" />
