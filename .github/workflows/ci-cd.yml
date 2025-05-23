@@ -1,0 +1,38 @@
+name: Run ClearML Task
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  run_pipeline:
+    runs-on: ubuntu-latest
+
+    env:
+      CLEARML_API_ACCESS_KEY: ${{ secrets.CLEARML_API_ACCESS_KEY }}
+      CLEARML_API_SECRET_KEY: ${{ secrets.CLEARML_API_SECRET_KEY }}
+      CLEARML_API_HOST: ${{ secrets.CLEARML_API_HOST }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Debug ENV
+        run: |
+          echo "CLEARML_API_HOST=$CLEARML_API_HOST"
+          if [ -z "$CLEARML_API_HOST" ]; then echo "❌ HOST is empty!"; exit 1; fi
+          curl -I $CLEARML_API_HOST
+
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run ClearML task
+        run: |
+          python step1_dataset_upload.py
