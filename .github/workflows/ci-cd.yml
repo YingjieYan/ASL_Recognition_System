@@ -2,7 +2,7 @@ name: Run ClearML Task
 
 on:
   push:
-    branches: [main]
+    branches: [CI/CD]
 
 jobs:
   run_pipeline:
