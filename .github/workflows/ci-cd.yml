@@ -35,4 +35,5 @@ jobs:
 
       - name: Run ClearML task
         run: |
-          python step1_dataset_upload.py
+          clearml-agent daemon --queue "task" --detached
+          python main.py
