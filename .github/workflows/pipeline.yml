@@ -28,8 +28,4 @@ jobs:
 
       - name: Submit pipeline to ClearML queue
         run: |
-          clearml-task \
-            --project "ASL_Classification" \
-            --name "GitHub Submitted ASL Pipeline" \
-            --script main.py \
-            --queue "pipeline"
+          python main.py
