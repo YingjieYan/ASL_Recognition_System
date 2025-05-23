@@ -35,5 +35,5 @@ jobs:
 
       - name: Run ClearML task
         run: |
-          clearml-agent daemon --queue "task" --detached
+          clearml-agent daemon --queue "pipeline" --detached
           python main.py
