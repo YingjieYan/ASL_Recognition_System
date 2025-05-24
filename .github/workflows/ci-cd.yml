@@ -1,8 +1,7 @@
-# name: Run ClearML Task
+name: Placeholder workflow
 
-# on:
-#   push:
-#     branches: [CI/CD]
+on:
+  workflow_dispatch
 
 # jobs:
 #   run_pipeline:
