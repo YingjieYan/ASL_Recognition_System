@@ -42,13 +42,13 @@ Create a credential from the clearml workspace and paste it above
 Before starting the following steps, you need to create a new queue called pipeline in the works & queues of clearml, so that subsequent agents can listen to the queue and run the project steps according to their pipeline order.
 ### 1. Upload image dataset and generate metadata
  <pre> python step1_dataset_upload.py</pre>
-## 2. Load and preprocess images, upload training/test sets
+### 2. Load and preprocess images, upload training/test sets
   <pre> python step2_preprocessing.py</pre>
-## 3. Train model and save the weights
+### 3. Train model and save the weights
    <pre>  python step3_train_model.py  </pre> 
-## 4. start ClearML Agent
+### 4. start ClearML Agent
   <pre> clearml-agent daemon --queue pipeline --detached  </pre> 
-## 5. Run the pipeline controller to register its three steps into ASL_Pipeline
+### 5. Run the pipeline controller to register its three steps into ASL_Pipeline
    <pre>  python main.py  </pre> 
 
 ## 📊 ClearML Pipeline Overview
