@@ -32,7 +32,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run ClearML task
-        run: |
-          clearml-agent daemon --queue "pipeline" --detached
-          python main.py
+      # - name: Run ClearML task
+      #   run: |
+      #     clearml-agent daemon --queue "pipeline" --detached
+      #     python main.py
