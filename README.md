@@ -23,24 +23,24 @@ ASL/
 ├── requirements.txt               # Python dependencies for environment setup
 ├── README.md                      # Project overview, setup guide, and usage instructions
 </pre>
-# Getting Started
-## 1. Install Dependencies
+## Getting Started
+### 1. Install Dependencies
 <pre>
   pip install clearml
   pip install clearml-agent
 </pre>
-## 2. Configure ClearML
+### 2. Configure ClearML
 Create a credential from the clearml workspace and paste it above
 <pre>
   clearml-init
 </pre>
-## 3. Upload local datasets to clearML datasets
+### 3. Upload local datasets to clearML datasets
 <pre>
   python upload_dataset.py
 </pre>
-# Run three steps and store it in the ASL_Classification project
+## Run three steps and store it in the ASL_Classification project
 Before starting the following steps, you need to create a new queue called pipeline in the works & queues of clearml, so that subsequent agents can listen to the queue and run the project steps according to their pipeline order.
-## 1. Upload image dataset and generate metadata
+### 1. Upload image dataset and generate metadata
  <pre> python step1_dataset_upload.py</pre>
 ## 2. Load and preprocess images, upload training/test sets
   <pre> python step2_preprocessing.py</pre>
@@ -51,11 +51,11 @@ Before starting the following steps, you need to create a new queue called pipel
 ## 5. Run the pipeline controller to register its three steps into ASL_Pipeline
    <pre>  python main.py  </pre> 
 
-# 📊 ClearML Pipeline Overview
+## 📊 ClearML Pipeline Overview
 
 <img width="293" alt="readme" src="https://github.com/user-attachments/assets/a003b172-2e23-4041-95c2-804cfe1ee946" />
 
-# ⚙️ CI/CD Pipeline
+## ⚙️ CI/CD Pipeline
 
 This project integrates a **CI/CD workflow using GitHub Actions** to automate the execution of the ClearML pipeline. Every time code is pushed to the `CI/CD` branch, the pipeline is automatically triggered to ensure seamless model updates and reproducibility.
 
@@ -68,7 +68,7 @@ This project integrates a **CI/CD workflow using GitHub Actions** to automate th
 
 **CI/CD file:** `.github/workflows/pipeline.yml`
 
-# 🖥️ User Interface
+## 🖥️ User Interface
 
 We built an intuitive and interactive **web-based user interface using Streamlit**, implemented in `app.py`.  
 This interface allows users to:
