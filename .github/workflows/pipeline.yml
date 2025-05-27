@@ -1,8 +1,8 @@
 name: Submit ClearML Pipeline
 
 on:
-  push:
-    branches: [CI/CD]
+  pull_request:
+    branches: [main]
 
 jobs:
   submit_pipeline_to_clearml:

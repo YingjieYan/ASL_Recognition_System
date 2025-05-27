@@ -1,5 +1,8 @@
-streamlit
 tensorflow
 numpy
 pillow
 clearml==1.18.0
+opencv-python
+scikit-learn
+matplotlib
+mediapipe
