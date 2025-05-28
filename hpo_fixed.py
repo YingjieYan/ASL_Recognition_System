@@ -7,7 +7,8 @@ from clearml.automation.optuna.optuna import OptimizerOptuna
 task = Task.init(
     project_name="ASL_Classification_Pipeline",
     task_name="HPO: Train Model",
-    task_type=Task.TaskTypes.optimizer
+    task_type=Task.TaskTypes.optimizer,
+    reuse_last_task_id=False
 )
 
 optimizer = HyperParameterOptimizer(
@@ -29,5 +30,5 @@ optimizer = HyperParameterOptimizer(
     optimization_time_limit=60
 )
 
-# 启动优化过程
+
 optimizer.start()
