@@ -44,7 +44,8 @@ def main():
         'epochs': DEFAULT_EPOCHS, 'hidden_layer_1_units': DEFAULT_HIDDEN_LAYER_1_UNITS,
         'hidden_layer_2_units': DEFAULT_HIDDEN_LAYER_2_UNITS, 'dropout_rate': DEFAULT_DROPOUT_RATE,
     }
-    effective_hparams = task.connect(hparams_dict_defaults, name='Model Hyperparameters')
+    effective_hparams = task.connect(hparams_dict_defaults)
+
     print(f"Effective Hyperparameters for this run: {effective_hparams}")
 
     current_lr = float(effective_hparams.get('learning_rate'))
