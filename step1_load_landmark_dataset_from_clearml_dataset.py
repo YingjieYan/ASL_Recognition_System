@@ -17,7 +17,7 @@ def main():
     task = Task.init(project_name=TASK_PROJECT_NAME, task_name=TASK_NAME)
     logger = task.get_logger() # Get the logger associated with this task
     
-    # task.execute_remotely()
+    task.execute_remotely()
 
     print(f"Attempting to get ClearML Landmark Feature Dataset: Project='{CLEARML_LANDMARK_DATASET_PROJECT_SRC}', Name='{CLEARML_LANDMARK_DATASET_NAME_SRC}'")
     try:
