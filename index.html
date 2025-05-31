@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Signtranslator</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: "Segoe UI", sans-serif;
+            background: linear-gradient(to right, #dfe9f3, #ffffff);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            margin-top: 30px;
+            color: #2c3e50;
+            font-size: 36px;
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            margin-top: 20px;
+        }
+
+        .sign-image {
+            margin-right: 20px;
+        }
+
+        .sign-image img {
+            width: 320px;
+            height: auto;
+            border: 3px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .video-container {
+            border: 4px solid #2c3e50;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+            display: none;
+        }
+
+        .subtitle-box {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #ecf0f1;
+            border-left: 6px solid #3498db;
+            font-size: 22px;
+            color: #34495e;
+            min-width: 300px;
+            text-align: center;
+            border-radius: 5px;
+        }
+
+        .button-group {
+            margin-top: 30px;
+        }
+
+        button {
+            margin: 0 10px;
+            padding: 12px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background-color: #3498db;
+            color: white;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #2c80b4;
+        }
+
+        footer {
+            margin-top: 40px;
+            color: #888;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Signtranslator</h1>
+
+    <div class="button-group">
+        <button onclick="startCaption()">Start Caption</button>
+        <button onclick="clearCaption()">Clear Caption</button>
+        <button onclick="speakCaption()">🔊 Speak</button>
+    </div>
+
+    <div class="main-content">
+        <div class="sign-image">
+            <img src="{{ url_for('static', filename='sign.png') }}" alt="ASL Reference">
+        </div>
+        <div class="video-container" id="video-container">
+            <img id="video-feed" src="{{ url_for('video') }}" width="720" height="480">
+        </div>
+    </div>
+
+    <div class="subtitle-box" id="subtitle">Live Caption: None</div>
+
+    <footer>
+        <p>© 2025 Signtranslator Project</p>
+    </footer>
+
+    <script>
+        let subtitleInterval = null;
+
+        function startCaption() {
+            document.getElementById("video-container").style.display = "block";
+
+            if (!subtitleInterval) {
+                subtitleInterval = setInterval(() => {
+                    fetch('/get_text')
+                        .then(response => response.json())
+                        .then(data => {
+                            document.getElementById("subtitle").innerText = "Live Caption: " + (data.text || "None");
+                        });
+                }, 1000);
+            }
+        }
+
+        function clearCaption() {
+            fetch('/clear_text')
+                .then(() => {
+                    document.getElementById("subtitle").innerText = "Live Caption: None";
+                });
+        }
+
+        function speakCaption() {
+            const text = document.getElementById("subtitle").innerText.replace("Live Caption: ", "");
+            if (text && text !== "None") {
+                const speech = new SpeechSynthesisUtterance(text);
+                window.speechSynthesis.speak(speech);
+            }
+        }
+    </script>
+</body>
+</html>
