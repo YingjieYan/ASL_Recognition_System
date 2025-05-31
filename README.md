@@ -1,5 +1,5 @@
 
-# ASL Alphabet Image Classification with ClearML Pipeline
+# Real-Time ASL Sign Language Detection
 This project uses ClearML to implement a full ASL (American Sign Language) alphabet image classification workflow using deep learning and computer vision.
 
 ## 🎯Objective
