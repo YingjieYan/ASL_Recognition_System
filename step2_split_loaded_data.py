@@ -15,7 +15,7 @@ RANDOM_STATE = 42
 def main():
     task = Task.init(project_name=TASK_PROJECT_NAME, task_name=TASK_NAME)
     logger = task.get_logger()
-
+    task.execute_remotely()
     prev_step_task_id_manual = "c3e7b985b1ee4e61b0af07aee063e3b9" # <--- !!! FILL THIS MANUALLY FOR LOCAL TEST !!!
 
     # If run by a pipeline, it might pass the ID as a parameter.
