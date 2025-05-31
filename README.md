@@ -54,14 +54,15 @@ Before starting the following steps, you need to create a new queue called pipel
   <pre> python step2_split_loaded_data.py</pre>
 ### 3. Train model and save the weights
    <pre>  python step3_train_evaluate_landmark_mlp.py  </pre> 
-### 4. start ClearML Agent
+### 4. Run Hyperparameter Optimization
+  <pre> python hpo.py  </pre> 
+### 5. Start ClearML Agent
   <pre> clearml-agent daemon --queue pipeline --detached  </pre> 
-### 5. Run the pipeline controller to register its three steps into ASL_Pipeline
+### 6. Run the pipeline controller to register its three steps into ASL_Pipeline
    <pre>  python main.py  </pre> 
 
 ## 📊 ClearML Pipeline Overview
-
-<img width="293" alt="readme" src="https://github.com/user-attachments/assets/a003b172-2e23-4041-95c2-804cfe1ee946" />
+<img width="319" alt="26141748718488_ pic" src="https://github.com/user-attachments/assets/bf263984-02c1-4527-bf19-2f6714e3f807" />
 
 ## 🧪 Hyperparameter Optimisation (HPO)
 
