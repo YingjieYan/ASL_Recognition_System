@@ -3,25 +3,33 @@
 This project uses ClearML to implement a full ASL (American Sign Language) alphabet image classification workflow using deep learning and computer vision.
 
 ## 🎯Objective
-The Sign Language Recognition System is designed to bridge communication gaps and promote inclusivity across multiple sectors. In healthcare, it enables doctors and medical staff to understand the needs of Deaf-mute patients through gesture interpretation. In education, it serves as an assistive tool to help individuals learn sign language more efficiently. Additionally, the system can be integrated into smart devices to enable gesture-based control and interaction.
+This project is dedicated to developing a system capable of real-time recognition of American Sign Language (ASL) letters, aiming to support individuals with hearing impairments in achieving smoother communication in everyday life. The system captures users' hand movements via a webcam and employs deep learning models to classify ASL letters, displaying the recognised results as on-screen captions.
 
-By leveraging advanced computer vision and deep learning techniques, our solution accurately recognises and interprets hand gestures in real time. This technology empowers our organisation to expand into the healthcare, education, and smart technology markets with an accessible and intelligent communication solution.
+In educational settings, the system serves as a visual and interactive training platform for ASL learners, enhancing their learning efficiency. In public spaces such as transport hubs, service centres, and self-service kiosks, it can assist staff in communicating basic information with deaf or hard-of-hearing individuals. For daily interactions, the system provides real-time sign-to-text conversion, along with a speech function that vocalises the recognised content, improving convenience and natural communication.
+
+In addition, the system supports features such as dynamic caption assembly, text-to-speech output, and content clearing, offering a user-friendly interface and strong extensibility. It is well-suited to a variety of human–computer interaction scenarios, contributing to a more inclusive communication environment.
+
 
 ## 🚀 Project structure
 <pre>
 ASL/
-├── .github/workflows/             # CI/CD workflows (e.g., model training or deployment automation via GitHub Actions)
-├── app.py                         # Streamlit-based GUI for real-time ASL recognition and user feedback
-├── ASL.py                         # Main logic for handling ASL recognition using MediaPipe and MLP
-├── ASL_CNN.py                     # Legacy CNN-based recognition script (for reference or comparison)
-├── asl_cnn_model.h5               # Pretrained CNN model weights (legacy model)
-├── main.py                        # ClearML pipeline controller that links all pipeline steps
-├── step1_dataset_upload.py        # Step 1: Upload raw dataset and create metadata on ClearML
-├── step2_preprocess.py            # Step 2: Extract and normalise MediaPipe landmarks for model training
-├── step3_train_model.py           # Step 3: Train MLP model on preprocessed landmark data
-├── upload_dataset.py              # Utility script for manually uploading local datasets
-├── requirements.txt               # Python dependencies for environment setup
-├── README.md                      # Project overview, setup guide, and usage instructions
+├── .github/workflows/  # CI/CD automation workflow
+│
+├── app.py # Flask-based GUI for real-time ASL recognition
+├── index.html # HTML interface for front-end UI
+├── script.js # JavaScript logic for front-end interaction
+│
+├── step1_load_landmark_dataset_from_clearml_dataset.py # Step 1: Load dataset from ClearML
+├── step2_split_loaded_data.py # Step 2: Split dataset into train/test sets
+├── step3_train_evaluate_landmark_mlp.py # Step 3: Train & evaluate model
+├── upload_dataset_for_landmarks.py # Upload local dataset to ClearML
+├── main.py # Core pipeline runner that links ClearML steps
+├── hpo.py # Hyperparameter optimization using ClearML + Optuna
+│
+├── trained_asl_landmark_mlp_local.keras # Trained MLP model
+│
+├── requirements.txt # Project dependencies
+├── README.md # Project overview and usage guide
 </pre>
 ## Getting Started
 ### 1. Install Dependencies
@@ -36,16 +44,16 @@ Create a credential from the clearml workspace and paste it above
 </pre>
 ### 3. Upload local datasets to clearML datasets
 <pre>
-  python upload_dataset.py
+  python upload_dataset_for_landmarks.py
 </pre>
 ## Run three steps and store it in the ASL_Classification project
 Before starting the following steps, you need to create a new queue called pipeline in the works & queues of clearml, so that subsequent agents can listen to the queue and run the project steps according to their pipeline order.
 ### 1. Upload image dataset and generate metadata
- <pre> python step1_dataset_upload.py</pre>
+ <pre> python step1_load_landmark_dataset_from_clearml_dataset.py</pre>
 ### 2. Load and preprocess images, upload training/test sets
-  <pre> python step2_preprocessing.py</pre>
+  <pre> python step2_split_loaded_data.py</pre>
 ### 3. Train model and save the weights
-   <pre>  python step3_train_model.py  </pre> 
+   <pre>  python step3_train_evaluate_landmark_mlp.py  </pre> 
 ### 4. start ClearML Agent
   <pre> clearml-agent daemon --queue pipeline --detached  </pre> 
 ### 5. Run the pipeline controller to register its three steps into ASL_Pipeline
@@ -54,6 +62,47 @@ Before starting the following steps, you need to create a new queue called pipel
 ## 📊 ClearML Pipeline Overview
 
 <img width="293" alt="readme" src="https://github.com/user-attachments/assets/a003b172-2e23-4041-95c2-804cfe1ee946" />
+
+## 🧪 Hyperparameter Optimisation (HPO)
+
+The `hpo.py` script performs automated hyperparameter tuning using **ClearML** in combination with **Optuna**.
+
+### 🔍 Purpose
+This module aims to identify the optimal set of hyperparameters for the MLP model used in ASL landmark classification. It leverages Optuna's efficient sampling strategies and ClearML's experiment tracking to perform and visualise multiple trials.
+
+### 🛠️ Key Features
+- Integrated with ClearML’s `HyperParameterOptimizer` engine.
+- Automatically logs and compares trial results in the ClearML dashboard.
+- Supports customisable search spaces for parameters:
+  - Learning rate
+  - Batch size
+  - Dropout rate
+
+### 🚀 How to Run
+```bash
+python hpo.py
+```
+
+## 🖥️ User Interface
+
+We developed a clean and responsive **web-based user interface using Flask**, implemented in `app.py`.  
+This interface enables users to interact with the ASL recognition system in real time.
+
+### Key Features:
+- 📷 **Live webcam integration**: Capture hand gestures directly from your camera  
+- 🔤 **Real-time ASL letter recognition**: View model predictions instantly as subtitles  
+- 🔊 **Text-to-speech support**: Convert recognised text to speech for easier communication  
+- 🧹 **Clear content**: One-click to reset recognised output  
+- 💬 **Dynamic caption assembly**: Accumulate multiple letters into words or sentences
+
+### 🚀 How to Launch
+
+To start the web interface locally, run:
+```bash
+python app.py
+```
+Visit the address shown in the terminal (usually http://127.0.0.1:5000) to access the app.
+
 
 ## ⚙️ CI/CD Pipeline
 
@@ -67,21 +116,5 @@ This project integrates a **CI/CD workflow using GitHub Actions** to automate th
 - 🔐 Uses GitHub Secrets to securely manage ClearML API credentials.
 
 **CI/CD file:** `.github/workflows/pipeline.yml`
-
-## 🖥️ User Interface
-
-We built an intuitive and interactive **web-based user interface using Streamlit**, implemented in `app.py`.  
-This interface allows users to:
-
-- 📸 Capture live input or upload ASL gesture images  
-- 🤖 View real-time prediction results from the trained model  
-- 📝 Submit feedback on incorrect predictions to support future improvements  
-- 🔄 Seamlessly test the system with no additional setup
-
-To launch the UI locally, simply run:
-
-```bash
-streamlit run app.py
-```
 
 ## 📬 We Value Your Feedback!
