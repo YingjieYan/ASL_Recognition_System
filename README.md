@@ -87,6 +87,8 @@ python hpo.py
 
 We developed a clean and responsive **web-based user interface using Flask**, implemented in `app.py`.  
 This interface enables users to interact with the ASL recognition system in real time.
+### 🖼️ Demo Interface
+![GUI](https://github.com/YingjieYan/ASL_Recognition_System/raw/main/GUI.jpg)
 
 ### Key Features:
 - 📷 **Live webcam integration**: Capture hand gestures directly from your camera  
