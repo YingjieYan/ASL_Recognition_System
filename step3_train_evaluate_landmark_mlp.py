@@ -38,7 +38,7 @@ class ClearMLKerasProgressCallback(KerasCallback):
 def main():
     task = Task.init(project_name=TASK_PROJECT_NAME, task_name=TASK_NAME)
     logger = task.get_logger()
-
+    task.execute_remotely()
     hparams_dict_defaults = {
         'learning_rate': DEFAULT_LEARNING_RATE, 'batch_size': DEFAULT_BATCH_SIZE,
         'epochs': DEFAULT_EPOCHS, 'hidden_layer_1_units': DEFAULT_HIDDEN_LAYER_1_UNITS,
