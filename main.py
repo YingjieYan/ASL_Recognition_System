@@ -1,76 +1,76 @@
-# main.py (Pipeline Controller for 3-Step Landmark-based MLP)
 from clearml import Task
 from clearml.automation import PipelineController
 
-# --- Configuration ---
-PIPELINE_PROJECT_NAME = "ASL_Classification_Pipeline" 
-PIPELINE_NAME = "ASL_Landmark_MLP_3_Step_Processing_and_Training" 
-PIPELINE_VERSION = "1.0.3" 
+PIPELINE_PROJECT_NAME = "ASL_Classification_Pipeline"
+PIPELINE_NAME = "ASL_Landmark_MLP_Full_Pipeline_with_HPO"
+PIPELINE_VERSION = "1.0.10"
 
-PIPELINE_RUNS_TARGET_PROJECT = None 
-TARGET_EXECUTION_QUEUE = "pipeline" 
-# --- End Configuration ---
+PIPELINE_STEPS_EXECUTION_QUEUE = "pipeline"
+HPO_TRIALS_EXECUTION_QUEUE = "pipeline"
 
 def main():
-    # 1.PipelineController
     pipe = PipelineController(
         name=PIPELINE_NAME,
         project=PIPELINE_PROJECT_NAME,
         version=PIPELINE_VERSION,
     )
 
-    pipe.set_default_execution_queue(TARGET_EXECUTION_QUEUE)
-    print(f"Pipeline '{PIPELINE_NAME}' configured. Default execution queue: '{TARGET_EXECUTION_QUEUE}'.")
-    print("IMPORTANT: Ensure the 'ASL_Landmark_Features_NPZ' ClearML Dataset (in project "
-            f"'{PIPELINE_PROJECT_NAME}') exists. It should be created by running "
-            "'upload_dataset_for_landmarks.py' manually first.")
+    print(f"Pipeline '{PIPELINE_NAME}' (v{PIPELINE_VERSION}) configured.")
 
-
-    # Step 1: Load Landmark Dataset from ClearML Dataset
-    step1_pipeline_step_name = "step1_load_landmark_data_from_cl_dataset"
-    step1_base_task_name_in_script = "Pipeline Step 1: Load Landmark Dataset from ClearML_Dataset" 
     pipe.add_step(
-        name=step1_pipeline_step_name, 
-        base_task_project=PIPELINE_PROJECT_NAME, 
-        base_task_name=step1_base_task_name_in_script 
-    )
-    print(f"Added Pipeline Step 1: '{step1_pipeline_step_name}' (based on Task '{step1_base_task_name_in_script}')")
-
-
-    # Step 2: Split Loaded Data
-    step2_pipeline_step_name = "step2_split_loaded_landmark_data"
-    step2_base_task_name_in_script = "Pipeline Step 2: Split Loaded Landmark Data" 
-    pipe.add_step(
-        name=step2_pipeline_step_name,
-        parents=[step1_pipeline_step_name], 
+        name="Load_Landmark_Dataset",
         base_task_project=PIPELINE_PROJECT_NAME,
-        base_task_name=step2_base_task_name_in_script,
-        parameter_override={
-            "Args/step1_load_task_id": f"${{{step1_pipeline_step_name}.id}}"
-        }
+        base_task_name="Pipeline Step 1: Load Landmark Dataset from ClearML_Dataset",
+        execution_queue=PIPELINE_STEPS_EXECUTION_QUEUE
     )
-    print(f"Added Pipeline Step 2: '{step2_pipeline_step_name}' (based on Task '{step2_base_task_name_in_script}')")
 
-
-    # Step 3: Train & Evaluate Landmark MLP Model
-    step3_pipeline_step_name = "step3_train_evaluate_landmark_mlp"
-    step3_base_task_name_in_script = "Pipeline Step 3: Train & Evaluate Landmark MLP" 
     pipe.add_step(
-        name=step3_pipeline_step_name,
-        parents=[step2_pipeline_step_name],
+        name="Split_Landmark_Data",
+        parents=["Load_Landmark_Dataset"],
         base_task_project=PIPELINE_PROJECT_NAME,
-        base_task_name=step3_base_task_name_in_script,
+        base_task_name="Pipeline Step 2: Split Loaded Landmark Data",
         parameter_override={
-            "Args/step2_split_task_id": f"${{{step2_pipeline_step_name}.id}}"
-        }
+            "Args/step1_load_task_id": "${Load_Landmark_Dataset.id}"
+        },
+        execution_queue=PIPELINE_STEPS_EXECUTION_QUEUE
     )
-    print(f"Added Pipeline Step 3: '{step3_pipeline_step_name}' (based on Task '{step3_base_task_name_in_script}')")
 
+    pipe.add_step(
+        name="Train_Base_MLP_Model",
+        parents=["Split_Landmark_Data"],
+        base_task_project=PIPELINE_PROJECT_NAME,
+        base_task_name="Pipeline Step 3: Train & Evaluate Landmark MLP",
+        parameter_override={
+            "Args/step2_split_task_id": "${Split_Landmark_Data.id}"
+        },
+        execution_queue=PIPELINE_STEPS_EXECUTION_QUEUE
+    )
 
-    # --- 4. start Pipeline ---
-    pipe.start(queue=TARGET_EXECUTION_QUEUE)
-    print(f"Pipeline '{PIPELINE_NAME}' (version {PIPELINE_VERSION}) launched and enqueued on '{TARGET_EXECUTION_QUEUE}'.")
-    print(f"Controller Task ID for this pipeline run: {pipe.id}")
+    pipe.add_step(
+        name="Optimize_MLP_Hyperparameters_Controller",
+        parents=["Train_Base_MLP_Model"],
+        base_task_project=PIPELINE_PROJECT_NAME,
+        base_task_name="HPO: Train Model",
+        parameter_override={
+            "Args/base_train_task_id_for_hpo": "${Train_Base_MLP_Model.id}",
+            "Args/project_name": PIPELINE_PROJECT_NAME,
+            "Args/num_trials": 15,
+            "Args/time_limit_minutes": 90,
+            "Args/execution_queue_for_trials": HPO_TRIALS_EXECUTION_QUEUE,
+            "Args/max_number_of_concurrent_tasks": 2,
+            "Args/save_top_k_tasks_only": 3,
+            "Args/objective_metric_title": "Validation_accuracy",
+            "Args/objective_metric_series": "validation_accuracy",
+            "Args/objective_metric_sign": "max"
+        },
+        execution_queue=PIPELINE_STEPS_EXECUTION_QUEUE
+    )
+
+    pipe.start(queue=PIPELINE_STEPS_EXECUTION_QUEUE)
+
+    print(f"\nPipeline '{PIPELINE_NAME}' launched successfully.")
+    print(f"Controller Task ID: {pipe.id}")
+    print(f"View in ClearML UI under project: '{PIPELINE_PROJECT_NAME}'")
 
 if __name__ == "__main__":
     main()
